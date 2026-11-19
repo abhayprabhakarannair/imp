@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get update && sudo apt-get install -y doctest-dev shellcheck
+      - run: make test
+      - run: shellcheck ota-upload.sh .githooks/*
+      - uses: arduino/setup-arduino-cli@v2
+        with:
+          version: 1.5.1
+      - uses: actions/cache@v4
+        with:
+          path: ~/.arduino15
+          key: arduino-${{ hashFiles('sketch.yaml') }}
+      - run: cp site.example.h site.h
+      - run: arduino-cli compile --profile devkit --warnings all --output-dir build/fw .
+
+  secrets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,9 @@
+default_profile: devkit
+default_port: /dev/ttyACM0
+
+profiles:
+  devkit:
+    fqbn: esp32:esp32:esp32s3:FlashSize=16M,PSRAM=opi,PartitionScheme=app3M_fat9M_16MB,CDCOnBoot=cdc,USBMode=hwcdc
+    platforms:
+      - platform: esp32:esp32 (3.3.13)
+        platform_index_url: https://espressif.github.io/arduino-esp32/package_esp32_index.json

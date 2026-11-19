@@ -1,0 +1,3 @@
+site.h
+build/
+.claude/settings.local.json
